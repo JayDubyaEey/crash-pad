@@ -1,0 +1,14 @@
+:root {
+  color-scheme: light;
+  font: 15px/1.4 system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f1f2f4;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
