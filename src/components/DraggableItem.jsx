@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { VehicleIcon, SpeedSign } from './icons/VehicleIcon'
+import { VehicleIcon, SpeedSign, ImpactIcon } from './icons/VehicleIcon'
 
 // Drags an already-placed item (vehicle icon or speed sign) around within
 // its panel using pointer events, so it works with both mouse and touch.
@@ -35,12 +35,14 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
       onPointerUp={handlePointerUp}
     >
       <div className="placed-item-shape" style={{ transform: `rotate(${item.rotation ?? 0}deg)` }}>
-        {item.kind === 'vehicle' ? <VehicleIcon type={item.vehicleType} /> : <SpeedSign speed={item.speed} />}
+        {item.kind === 'vehicle' && <VehicleIcon type={item.vehicleType} />}
+        {item.kind === 'sign' && <SpeedSign speed={item.speed} />}
+        {item.kind === 'impact' && <ImpactIcon />}
       </div>
 
       {selected && (
         <div className="item-controls no-print" onPointerDown={(e) => e.stopPropagation()}>
-          {item.kind === 'vehicle' ? (
+          {item.kind === 'vehicle' && (
             <>
               <button type="button" onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) - 15 })}>
                 ⟲
@@ -49,7 +51,8 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
                 ⟳
               </button>
             </>
-          ) : (
+          )}
+          {item.kind === 'sign' && (
             <input
               type="number"
               value={item.speed}

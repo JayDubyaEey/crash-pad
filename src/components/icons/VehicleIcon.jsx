@@ -32,6 +32,28 @@ export function VehicleIcon({ type }) {
   )
 }
 
+export function ImpactIcon() {
+  const size = 36
+  const points = starPoints(18, 18, 8, 16, 8)
+  return (
+    <svg width={size} height={size} viewBox="0 0 36 36">
+      <polygon points={points} fill="#f97316" stroke="#7c2d12" strokeWidth="1.5" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function starPoints(cx, cy, innerR, outerR, spikes) {
+  const step = Math.PI / spikes
+  let angle = -Math.PI / 2
+  const pts = []
+  for (let i = 0; i < spikes * 2; i++) {
+    const r = i % 2 === 0 ? outerR : innerR
+    pts.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`)
+    angle += step
+  }
+  return pts.join(' ')
+}
+
 export function SpeedSign({ speed }) {
   const size = 40
   return (
