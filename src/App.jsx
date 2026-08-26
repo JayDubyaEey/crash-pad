@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { LocationPicker } from './components/LocationPicker'
 import { ReportHeader } from './components/ReportHeader'
-import { ReferenceMap } from './components/ReferenceMap'
 import { StoryboardPanel } from './components/StoryboardPanel'
 import './App.css'
 
@@ -32,11 +31,9 @@ export default function App() {
         </span>
       </div>
 
-      <LocationPicker location={location} onLocationChange={setLocation} />
-
       <div className="print-page">
         <ReportHeader meta={meta} onChange={setMeta} location={location} />
-        <ReferenceMap location={location} />
+        <LocationPicker location={location} onLocationChange={setLocation} />
         <p className="map-attribution">Map data &copy; OpenStreetMap contributors</p>
       </div>
 

@@ -9,7 +9,7 @@ import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
 // relies on Leaflet's built-in over-zoom, which upscales the z19 tiles
 // client-side (softer image, but the requested tighter framing).
 const NATIVE_MAX_ZOOM = 19
-const ZOOM = 21
+const ZOOM = 20
 
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`

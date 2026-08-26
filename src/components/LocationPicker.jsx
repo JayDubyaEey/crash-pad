@@ -14,6 +14,8 @@ function ClickToMove({ onMove }) {
   return null
 }
 
+// This map doubles as the report's page-1 reference view, so unlike the
+// no-print search controls, the map itself stays visible when printing.
 export function LocationPicker({ location, onLocationChange }) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
@@ -41,54 +43,56 @@ export function LocationPicker({ location, onLocationChange }) {
   }
 
   return (
-    <div className="location-picker no-print">
-      <form onSubmit={handleSearch} className="location-search">
-        <input
-          type="text"
-          placeholder="Address, place, or 'lat, lng'"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
+    <div className="location-picker">
+      <div className="no-print">
+        <form onSubmit={handleSearch} className="location-search">
+          <input
+            type="text"
+            placeholder="Address, place, or 'lat, lng'"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button type="submit">Search</button>
+        </form>
 
-      {status === 'error' && <p className="hint error">Couldn't look that up — try again.</p>}
+        {status === 'error' && <p className="hint error">Couldn't look that up — try again.</p>}
 
-      {results.length > 1 && (
-        <ul className="location-results">
-          {results.map((r, i) => (
-            <li key={i}>
-              <button type="button" onClick={() => pick(r)}>
-                {r.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+        {results.length > 1 && (
+          <ul className="location-results">
+            {results.map((r, i) => (
+              <li key={i}>
+                <button type="button" onClick={() => pick(r)}>
+                  {r.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {location && <p className="hint">Click the map to fine-tune the pin.</p>}
+      </div>
 
       {location && (
-        <>
-          <p className="hint">Click the map to fine-tune the pin.</p>
-          <MapContainer center={[location.lat, location.lng]} zoom={19} maxZoom={19} style={{ height: 260 }}>
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker
-              position={[location.lat, location.lng]}
-              icon={markerIcon}
-              draggable
-              eventHandlers={{
-                dragend: (e) => {
-                  const { lat, lng } = e.target.getLatLng()
-                  onLocationChange({ ...location, lat, lng })
-                },
-              }}
-            />
-            <ClickToMove onMove={(lat, lng) => onLocationChange({ ...location, lat, lng })} />
-            <RecenterMap lat={location.lat} lng={location.lng} />
-          </MapContainer>
-        </>
+        <MapContainer center={[location.lat, location.lng]} zoom={18} maxZoom={19} className="picker-map">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxNativeZoom={19}
+          />
+          <Marker
+            position={[location.lat, location.lng]}
+            icon={markerIcon}
+            draggable
+            eventHandlers={{
+              dragend: (e) => {
+                const { lat, lng } = e.target.getLatLng()
+                onLocationChange({ ...location, lat, lng })
+              },
+            }}
+          />
+          <ClickToMove onMove={(lat, lng) => onLocationChange({ ...location, lat, lng })} />
+          <RecenterMap lat={location.lat} lng={location.lng} />
+        </MapContainer>
       )}
     </div>
   )
