@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { MapContainer, TileLayer, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { DraggableItem } from './DraggableItem'
+import { RecenterMap } from './RecenterMap'
 import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
 import { markerIcon } from '../lib/leafletIcon'
 
@@ -73,6 +74,7 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[location.lat, location.lng]} icon={markerIcon} />
+            <RecenterMap lat={location.lat} lng={location.lng} />
           </MapContainer>
         ) : (
           <div className="panel-map-placeholder">Set a location above</div>

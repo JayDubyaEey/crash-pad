@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { geocode } from '../lib/geocode'
 import { markerIcon } from '../lib/leafletIcon'
+import { RecenterMap } from './RecenterMap'
 
 function ClickToMove({ onMove }) {
   useMapEvents({
@@ -85,6 +86,7 @@ export function LocationPicker({ location, onLocationChange }) {
               }}
             />
             <ClickToMove onMove={(lat, lng) => onLocationChange({ ...location, lat, lng })} />
+            <RecenterMap lat={location.lat} lng={location.lng} />
           </MapContainer>
         </>
       )}
