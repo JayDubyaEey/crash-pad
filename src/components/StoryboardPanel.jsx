@@ -6,7 +6,7 @@ import { RecenterMap } from './RecenterMap'
 import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
 import { markerIcon } from '../lib/leafletIcon'
 
-const ZOOM = 18
+const ZOOM = 20
 
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`
@@ -45,6 +45,7 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
         {VEHICLE_TYPES.map((v) => (
           <button key={v.type} type="button" title={`Add ${v.label}`} onClick={() => addVehicle(v.type)}>
             <VehicleIcon type={v.type} />
+            <span>{v.label}</span>
           </button>
         ))}
         <button type="button" className="add-sign-btn" onClick={addSign}>
