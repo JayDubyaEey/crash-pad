@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { LocationPicker } from './components/LocationPicker'
 import { ReportHeader } from './components/ReportHeader'
+import { ReferenceMap } from './components/ReferenceMap'
 import { StoryboardPanel } from './components/StoryboardPanel'
 import './App.css'
 
@@ -27,27 +28,32 @@ export default function App() {
           Export PDF
         </button>
         <span className="hint">
-          Uses your browser's print dialog — choose "Save as PDF". Fills one A4 page.
+          Uses your browser's print dialog — choose "Save as PDF". Fills two A4 pages.
         </span>
       </div>
 
       <LocationPicker location={location} onLocationChange={setLocation} />
 
-      <ReportHeader meta={meta} onChange={setMeta} address={location?.address} />
-
-      <div className="storyboard-grid">
-        {FRAME_TITLES.map((title, i) => (
-          <StoryboardPanel
-            key={title}
-            title={title}
-            location={location}
-            items={frames[i]}
-            onItemsChange={(items) => updateFrame(i, items)}
-          />
-        ))}
+      <div className="print-page">
+        <ReportHeader meta={meta} onChange={setMeta} location={location} />
+        <ReferenceMap location={location} />
+        <p className="map-attribution">Map data &copy; OpenStreetMap contributors</p>
       </div>
 
-      <p className="map-attribution">Map data &copy; OpenStreetMap contributors</p>
+      <div className="print-page">
+        <h2 className="section-title">Accident Storyboard</h2>
+        <div className="storyboard-grid">
+          {FRAME_TITLES.map((title, i) => (
+            <StoryboardPanel
+              key={title}
+              title={title}
+              location={location}
+              items={frames[i]}
+              onItemsChange={(items) => updateFrame(i, items)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

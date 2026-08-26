@@ -1,12 +1,15 @@
 import { useRef, useState } from 'react'
-import { MapContainer, TileLayer, Marker } from 'react-leaflet'
+import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { DraggableItem } from './DraggableItem'
 import { RecenterMap } from './RecenterMap'
 import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
-import { markerIcon } from '../lib/leafletIcon'
 
-const ZOOM = 20
+// The tile server's real max zoom is 19 (z20 requests 400) — going past that
+// relies on Leaflet's built-in over-zoom, which upscales the z19 tiles
+// client-side (softer image, but the requested tighter framing).
+const NATIVE_MAX_ZOOM = 19
+const ZOOM = 21
 
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`
@@ -63,6 +66,7 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
           <MapContainer
             center={[location.lat, location.lng]}
             zoom={ZOOM}
+            maxZoom={ZOOM}
             style={{ width: '100%', height: '100%' }}
             zoomControl={false}
             dragging={false}
@@ -73,8 +77,10 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
             keyboard={false}
             attributionControl={false}
           >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <Marker position={[location.lat, location.lng]} icon={markerIcon} />
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              maxNativeZoom={NATIVE_MAX_ZOOM}
+            />
             <RecenterMap lat={location.lat} lng={location.lng} />
           </MapContainer>
         ) : (

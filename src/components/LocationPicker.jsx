@@ -69,7 +69,7 @@ export function LocationPicker({ location, onLocationChange }) {
       {location && (
         <>
           <p className="hint">Click the map to fine-tune the pin.</p>
-          <MapContainer center={[location.lat, location.lng]} zoom={20} style={{ height: 260 }}>
+          <MapContainer center={[location.lat, location.lng]} zoom={19} maxZoom={19} style={{ height: 260 }}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

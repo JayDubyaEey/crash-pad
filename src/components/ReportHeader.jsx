@@ -1,4 +1,4 @@
-export function ReportHeader({ meta, onChange, address }) {
+export function ReportHeader({ meta, onChange, location }) {
   function set(field) {
     return (e) => onChange({ ...meta, [field]: e.target.value })
   }
@@ -10,7 +10,12 @@ export function ReportHeader({ meta, onChange, address }) {
         <input className="date-input" type="date" value={meta.date} onChange={set('date')} />
       </div>
 
-      <div className="address-line">{address || 'No location set'}</div>
+      <div className="address-line">{location?.address || 'No location set'}</div>
+      {location && (
+        <div className="coords-line">
+          Coordinates: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+        </div>
+      )}
 
       <div className="party-row">
         <label className="party-field">
