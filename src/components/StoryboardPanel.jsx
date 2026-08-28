@@ -9,7 +9,7 @@ const ZOOM = 19
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`
 
-export function StoryboardPanel({ title, location, items, onItemsChange }) {
+export function StoryboardPanel({ title, description, location, items, onItemsChange, onCopyToOthers }) {
   const panelRef = useRef(null)
   const [selectedId, setSelectedId] = useState(null)
 
@@ -60,10 +60,16 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
         <Button type="button" variant="outline" size="sm" title="Add impact point" onClick={addImpact}>
           <ImpactIcon />
         </Button>
+        {onCopyToOthers && items.length > 0 && (
+          <Button type="button" variant="outline" size="sm" className="ml-auto text-[11px]" onClick={onCopyToOthers}>
+            Copy to Impact &amp; After
+          </Button>
+        )}
       </div>
 
-      <div className="panel-title border-b border-border bg-muted p-1 text-center text-[13px] font-semibold">
-        {title}
+      <div className="panel-title border-b border-border bg-muted px-1 py-1.5 text-center">
+        <div className="text-[13px] font-semibold">{title}</div>
+        {description && <div className="text-[10px] text-muted-foreground">{description}</div>}
       </div>
 
       <div className="panel-map" ref={panelRef}>

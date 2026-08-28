@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps'
+import { useEffect, useState } from 'react'
+import { APIProvider, Map, Marker, useMap } from '@vis.gl/react-google-maps'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { geocode } from '../lib/geocode'
 
 // This is a browser key, restricted by HTTP referrer in the Google Cloud
@@ -9,6 +10,25 @@ import { geocode } from '../lib/geocode'
 // Maps JavaScript API is designed to be loaded client-side and can't be
 // proxied, so referrer restriction (not secrecy) is what protects it.
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+
+// Business/POI pins and labels are noise on an accident diagram — just the
+// road layout is needed.
+const MAP_STYLES = [
+  { featureType: 'poi', elementType: 'all', stylers: [{ visibility: 'off' }] },
+  { featureType: 'transit', elementType: 'all', stylers: [{ visibility: 'off' }] },
+]
+
+// `Map` only reads center/zoom once (as `default*`) — it manages its own
+// camera after that, so panning/zooming isn't fought on every re-render.
+// This nudges the camera back only when `location` itself changes (a search
+// pick, not the user panning around).
+function RecenterMap({ lat, lng }) {
+  const map = useMap()
+  useEffect(() => {
+    map?.setCenter({ lat, lng })
+  }, [lat, lng, map])
+  return null
+}
 
 // This map doubles as the report's page-1 reference view, so unlike the
 // no-print search controls, the map itself stays visible when printing.
@@ -39,9 +59,10 @@ export function LocationPicker({ location, onLocationChange }) {
   }
 
   return (
-    <div className="location-picker">
-      <div className="no-print">
-        <form onSubmit={handleSearch} className="mb-2 flex gap-2">
+    <div className="location-picker flex flex-col gap-2">
+      <div className="no-print flex flex-col gap-2">
+        <Label className="text-xs font-medium text-muted-foreground">Location</Label>
+        <form onSubmit={handleSearch} className="flex gap-2">
           <Input
             type="text"
             placeholder="Address, place, or 'lat, lng'"
@@ -56,7 +77,7 @@ export function LocationPicker({ location, onLocationChange }) {
         {status === 'error' && <p className="hint error text-xs text-destructive">Couldn't look that up — try again.</p>}
 
         {results.length > 1 && (
-          <ul className="mb-2 list-none overflow-hidden rounded-lg border border-border p-0">
+          <ul className="list-none overflow-hidden rounded-lg border border-border p-0">
             {results.map((r, i) => (
               <li key={i} className="border-b border-border last:border-b-0">
                 <button
@@ -74,20 +95,31 @@ export function LocationPicker({ location, onLocationChange }) {
         {location && <p className="hint text-xs text-muted-foreground">Click the map to fine-tune the pin.</p>}
       </div>
 
+      {location && (
+        <div className="text-sm text-foreground/80">
+          {location.address}
+          <span className="ml-2 font-mono text-xs text-muted-foreground">
+            {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+          </span>
+        </div>
+      )}
+
       <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
         {location && (
           <Map
             className="picker-map"
-            center={{ lat: location.lat, lng: location.lng }}
-            zoom={18}
+            defaultCenter={{ lat: location.lat, lng: location.lng }}
+            defaultZoom={18}
             gestureHandling="greedy"
             disableDefaultUI
             zoomControl
+            styles={MAP_STYLES}
             onClick={(e) => {
               if (!e.detail.latLng) return
               onLocationChange({ ...location, lat: e.detail.latLng.lat, lng: e.detail.latLng.lng })
             }}
           >
+            <RecenterMap lat={location.lat} lng={location.lng} />
             <Marker
               position={{ lat: location.lat, lng: location.lng }}
               draggable

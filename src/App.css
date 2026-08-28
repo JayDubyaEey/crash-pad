@@ -68,6 +68,28 @@
   transform: translateX(-50%);
 }
 
+.party-tag {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 2px;
+  white-space: nowrap;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.party-tag.yours {
+  background: #2563eb;
+}
+
+.party-tag.other {
+  background: #dc2626;
+}
+
 /* --- Print: single clean A4 page --- */
 @page {
   size: A4;
@@ -110,9 +132,11 @@
   .date-input {
     border: none;
     padding: 0;
+    background: none;
   }
 
-  .number-plate {
+  .number-plate,
+  .party-tag {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

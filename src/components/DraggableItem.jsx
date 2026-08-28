@@ -6,6 +6,8 @@ import { VehicleIcon, SpeedSign, ImpactIcon } from './icons/VehicleIcon'
 // its panel using pointer events, so it works with both mouse and touch.
 export function DraggableItem({ item, panelRef, selected, onChange, onSelect, onDelete }) {
   const dragging = useRef(false)
+  const rotating = useRef(false)
+  const shapeRef = useRef(null)
 
   function handlePointerDown(e) {
     e.stopPropagation()
@@ -27,6 +29,29 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
     e.currentTarget.releasePointerCapture(e.pointerId)
   }
 
+  // Free rotation: angle from the shape's center to the pointer, offset so
+  // "straight up" (handle directly above) is 0deg — matches the icon's
+  // resting orientation.
+  function handleRotateStart(e) {
+    e.stopPropagation()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    rotating.current = true
+  }
+
+  function handleRotateMove(e) {
+    if (!rotating.current || !shapeRef.current) return
+    const rect = shapeRef.current.getBoundingClientRect()
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    const angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI + 90
+    onChange({ ...item, rotation: Math.round(angle) })
+  }
+
+  function handleRotateEnd(e) {
+    rotating.current = false
+    e.currentTarget.releasePointerCapture(e.pointerId)
+  }
+
   return (
     <div
       className={`placed-item${selected ? ' selected' : ''}`}
@@ -35,11 +60,19 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
-      <div className="placed-item-shape" style={{ transform: `rotate(${item.rotation ?? 0}deg)` }}>
+      <div
+        ref={shapeRef}
+        className="placed-item-shape"
+        style={{ transform: `rotate(${item.rotation ?? 0}deg)` }}
+      >
         {item.kind === 'vehicle' && <VehicleIcon type={item.vehicleType} />}
         {item.kind === 'sign' && <SpeedSign speed={item.speed} />}
         {item.kind === 'impact' && <ImpactIcon />}
       </div>
+
+      {item.kind === 'vehicle' && item.party && (
+        <div className={`party-tag ${item.party}`}>{item.party === 'yours' ? 'Yours' : 'Other'}</div>
+      )}
 
       {selected && (
         <div
@@ -48,21 +81,32 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
         >
           {item.kind === 'vehicle' && (
             <>
+              <div
+                className="flex h-6 w-6 touch-none cursor-grab items-center justify-center rounded bg-secondary text-secondary-foreground active:cursor-grabbing"
+                title="Drag to rotate"
+                onPointerDown={handleRotateStart}
+                onPointerMove={handleRotateMove}
+                onPointerUp={handleRotateEnd}
+              >
+                ↻
+              </div>
               <Button
                 type="button"
                 size="icon-xs"
-                variant="secondary"
-                onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) - 15 })}
+                variant={item.party === 'yours' ? 'default' : 'secondary'}
+                title="Mark as your vehicle"
+                onClick={() => onChange({ ...item, party: 'yours' })}
               >
-                ⟲
+                Y
               </Button>
               <Button
                 type="button"
                 size="icon-xs"
-                variant="secondary"
-                onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) + 15 })}
+                variant={item.party === 'other' ? 'default' : 'secondary'}
+                title="Mark as the other vehicle"
+                onClick={() => onChange({ ...item, party: 'other' })}
               >
-                ⟳
+                O
               </Button>
             </>
           )}
