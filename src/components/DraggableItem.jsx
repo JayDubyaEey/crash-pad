@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { Button } from '@/components/ui/button'
 import { VehicleIcon, SpeedSign, ImpactIcon } from './icons/VehicleIcon'
 
 // Drags an already-placed item (vehicle icon or speed sign) around within
@@ -41,28 +42,42 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
       </div>
 
       {selected && (
-        <div className="item-controls no-print" onPointerDown={(e) => e.stopPropagation()}>
+        <div
+          className="item-controls no-print flex items-center gap-0.5 whitespace-nowrap rounded-md bg-foreground p-0.5"
+          onPointerDown={(e) => e.stopPropagation()}
+        >
           {item.kind === 'vehicle' && (
             <>
-              <button type="button" onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) - 15 })}>
+              <Button
+                type="button"
+                size="icon-xs"
+                variant="secondary"
+                onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) - 15 })}
+              >
                 ⟲
-              </button>
-              <button type="button" onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) + 15 })}>
+              </Button>
+              <Button
+                type="button"
+                size="icon-xs"
+                variant="secondary"
+                onClick={() => onChange({ ...item, rotation: (item.rotation ?? 0) + 15 })}
+              >
                 ⟳
-              </button>
+              </Button>
             </>
           )}
           {item.kind === 'sign' && (
             <input
               type="number"
+              className="w-9 rounded px-1.5 py-0.5 text-xs"
               value={item.speed}
               onChange={(e) => onChange({ ...item, speed: e.target.value })}
               onPointerDown={(e) => e.stopPropagation()}
             />
           )}
-          <button type="button" className="delete-btn" onClick={() => onDelete(item.id)}>
+          <Button type="button" size="icon-xs" variant="destructive" onClick={() => onDelete(item.id)}>
             ×
-          </button>
+          </Button>
         </div>
       )}
     </div>

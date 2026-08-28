@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { geocode } from '../lib/geocode'
 import { markerIcon } from '../lib/leafletIcon'
 import { RecenterMap } from './RecenterMap'
@@ -45,23 +47,29 @@ export function LocationPicker({ location, onLocationChange }) {
   return (
     <div className="location-picker">
       <div className="no-print">
-        <form onSubmit={handleSearch} className="location-search">
-          <input
+        <form onSubmit={handleSearch} className="mb-2 flex gap-2">
+          <Input
             type="text"
             placeholder="Address, place, or 'lat, lng'"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button type="submit">Search</button>
+          <Button type="submit" variant="outline">
+            Search
+          </Button>
         </form>
 
-        {status === 'error' && <p className="hint error">Couldn't look that up — try again.</p>}
+        {status === 'error' && <p className="hint error text-xs text-destructive">Couldn't look that up — try again.</p>}
 
         {results.length > 1 && (
-          <ul className="location-results">
+          <ul className="mb-2 list-none overflow-hidden rounded-lg border border-border p-0">
             {results.map((r, i) => (
-              <li key={i}>
-                <button type="button" onClick={() => pick(r)}>
+              <li key={i} className="border-b border-border last:border-b-0">
+                <button
+                  type="button"
+                  className="w-full bg-background p-2 text-left text-sm hover:bg-muted"
+                  onClick={() => pick(r)}
+                >
                   {r.label}
                 </button>
               </li>
@@ -69,7 +77,7 @@ export function LocationPicker({ location, onLocationChange }) {
           </ul>
         )}
 
-        {location && <p className="hint">Click the map to fine-tune the pin.</p>}
+        {location && <p className="hint text-xs text-muted-foreground">Click the map to fine-tune the pin.</p>}
       </div>
 
       {location && (

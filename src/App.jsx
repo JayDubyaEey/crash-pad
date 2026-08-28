@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { LocationPicker } from './components/LocationPicker'
 import { ReportHeader } from './components/ReportHeader'
 import { StoryboardPanel } from './components/StoryboardPanel'
@@ -10,8 +11,10 @@ export default function App() {
   const [location, setLocation] = useState(null)
   const [meta, setMeta] = useState({
     date: new Date().toISOString().slice(0, 10),
-    yourVehicle: '',
-    otherVehicle: '',
+    yourVehicleReg: '',
+    yourVehicleModel: '',
+    otherVehicleReg: '',
+    otherVehicleModel: '',
     notes: '',
   })
   const [frames, setFrames] = useState([[], [], []])
@@ -22,11 +25,11 @@ export default function App() {
 
   return (
     <div className="app">
-      <div className="no-print toolbar">
-        <button type="button" onClick={() => window.print()}>
+      <div className="no-print toolbar flex items-center gap-3 mb-4">
+        <Button type="button" onClick={() => window.print()}>
           Export PDF
-        </button>
-        <span className="hint">
+        </Button>
+        <span className="hint text-xs text-muted-foreground">
           Uses your browser's print dialog — choose "Save as PDF". Fills two A4 pages.
         </span>
       </div>
@@ -34,11 +37,13 @@ export default function App() {
       <div className="print-page">
         <ReportHeader meta={meta} onChange={setMeta} location={location} />
         <LocationPicker location={location} onLocationChange={setLocation} />
-        <p className="map-attribution">Map data &copy; OpenStreetMap contributors</p>
+        <p className="map-attribution text-[10px] text-muted-foreground mt-2">
+          Map data &copy; OpenStreetMap contributors
+        </p>
       </div>
 
       <div className="print-page">
-        <h2 className="section-title">Accident Storyboard</h2>
+        <h2 className="section-title mb-2 text-[15px]">Accident Storyboard</h2>
         <div className="storyboard-grid">
           {FRAME_TITLES.map((title, i) => (
             <StoryboardPanel

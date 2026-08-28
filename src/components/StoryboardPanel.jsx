@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
+import { Button } from '@/components/ui/button'
 import { DraggableItem } from './DraggableItem'
 import { RecenterMap } from './RecenterMap'
 import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
@@ -43,23 +44,33 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
   }
 
   return (
-    <div className="storyboard-panel">
-      <div className="panel-toolbar no-print">
+    <div className="storyboard-panel flex flex-col overflow-hidden rounded-lg border border-border">
+      <div className="panel-toolbar no-print flex flex-wrap gap-1 border-b border-border bg-muted/40 p-1">
         {VEHICLE_TYPES.map((v) => (
-          <button key={v.type} type="button" title={`Add ${v.label}`} onClick={() => addVehicle(v.type)}>
+          <Button
+            key={v.type}
+            type="button"
+            variant="outline"
+            size="sm"
+            title={`Add ${v.label}`}
+            className="h-auto flex-col gap-0.5 px-1.5 py-1 text-[10px] text-muted-foreground"
+            onClick={() => addVehicle(v.type)}
+          >
             <VehicleIcon type={v.type} />
             <span>{v.label}</span>
-          </button>
+          </Button>
         ))}
-        <button type="button" className="add-sign-btn" onClick={addSign}>
+        <Button type="button" variant="outline" size="sm" className="text-[11px]" onClick={addSign}>
           + Speed
-        </button>
-        <button type="button" title="Add impact point" onClick={addImpact}>
+        </Button>
+        <Button type="button" variant="outline" size="sm" title="Add impact point" onClick={addImpact}>
           <ImpactIcon />
-        </button>
+        </Button>
       </div>
 
-      <div className="panel-title">{title}</div>
+      <div className="panel-title border-b border-border bg-muted p-1 text-center text-[13px] font-semibold">
+        {title}
+      </div>
 
       <div className="panel-map" ref={panelRef}>
         {location ? (
@@ -85,7 +96,9 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
             <RecenterMap lat={location.lat} lng={location.lng} />
           </MapContainer>
         ) : (
-          <div className="panel-map-placeholder">Set a location above</div>
+          <div className="panel-map-placeholder flex h-full items-center justify-center p-2 text-center text-xs text-muted-foreground">
+            Set a location above
+          </div>
         )}
 
         <div className="panel-overlay" onPointerDown={() => setSelectedId(null)}>
