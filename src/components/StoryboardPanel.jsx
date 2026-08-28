@@ -1,16 +1,10 @@
 import { useRef, useState } from 'react'
-import { MapContainer, TileLayer } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
 import { Button } from '@/components/ui/button'
+import { staticMapUrl } from '@/lib/staticMap'
 import { DraggableItem } from './DraggableItem'
-import { RecenterMap } from './RecenterMap'
 import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
 
-// The tile server's real max zoom is 19 (z20 requests 400) — going past that
-// relies on Leaflet's built-in over-zoom, which upscales the z19 tiles
-// client-side (softer image, but the requested tighter framing).
-const NATIVE_MAX_ZOOM = 19
-const ZOOM = 20
+const ZOOM = 19
 
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`
@@ -74,27 +68,12 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
 
       <div className="panel-map" ref={panelRef}>
         {location ? (
-          <MapContainer
-            center={[location.lat, location.lng]}
-            zoom={ZOOM}
-            maxZoom={ZOOM}
-            style={{ width: '100%', height: '100%' }}
-            zoomControl={false}
-            dragging={false}
-            scrollWheelZoom={false}
-            doubleClickZoom={false}
-            touchZoom={false}
-            boxZoom={false}
-            keyboard={false}
-            attributionControl={false}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              maxNativeZoom={NATIVE_MAX_ZOOM}
-              maxZoom={ZOOM}
-            />
-            <RecenterMap lat={location.lat} lng={location.lng} />
-          </MapContainer>
+          <img
+            className="panel-map-img"
+            src={staticMapUrl(location, ZOOM)}
+            alt=""
+            draggable={false}
+          />
         ) : (
           <div className="panel-map-placeholder flex h-full items-center justify-center p-2 text-center text-xs text-muted-foreground">
             Set a location above

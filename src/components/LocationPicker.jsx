@@ -1,20 +1,14 @@
 import { useState } from 'react'
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { geocode } from '../lib/geocode'
-import { markerIcon } from '../lib/leafletIcon'
-import { RecenterMap } from './RecenterMap'
 
-function ClickToMove({ onMove }) {
-  useMapEvents({
-    click(e) {
-      onMove(e.latlng.lat, e.latlng.lng)
-    },
-  })
-  return null
-}
+// This is a browser key, restricted by HTTP referrer in the Google Cloud
+// console to this site's domain — unlike the DVLA/geocoding keys, Google's
+// Maps JavaScript API is designed to be loaded client-side and can't be
+// proxied, so referrer restriction (not secrecy) is what protects it.
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
 
 // This map doubles as the report's page-1 reference view, so unlike the
 // no-print search controls, the map itself stays visible when printing.
@@ -80,28 +74,32 @@ export function LocationPicker({ location, onLocationChange }) {
         {location && <p className="hint text-xs text-muted-foreground">Click the map to fine-tune the pin.</p>}
       </div>
 
-      {location && (
-        <MapContainer center={[location.lat, location.lng]} zoom={18} maxZoom={19} className="picker-map">
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            maxNativeZoom={19}
-          />
-          <Marker
-            position={[location.lat, location.lng]}
-            icon={markerIcon}
-            draggable
-            eventHandlers={{
-              dragend: (e) => {
-                const { lat, lng } = e.target.getLatLng()
-                onLocationChange({ ...location, lat, lng })
-              },
+      <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
+        {location && (
+          <Map
+            className="picker-map"
+            center={{ lat: location.lat, lng: location.lng }}
+            zoom={18}
+            gestureHandling="greedy"
+            disableDefaultUI
+            zoomControl
+            onClick={(e) => {
+              if (!e.detail.latLng) return
+              onLocationChange({ ...location, lat: e.detail.latLng.lat, lng: e.detail.latLng.lng })
             }}
-          />
-          <ClickToMove onMove={(lat, lng) => onLocationChange({ ...location, lat, lng })} />
-          <RecenterMap lat={location.lat} lng={location.lng} />
-        </MapContainer>
-      )}
+          >
+            <Marker
+              position={{ lat: location.lat, lng: location.lng }}
+              draggable
+              onDragEnd={(e) => {
+                const pos = e.latLng
+                if (!pos) return
+                onLocationChange({ ...location, lat: pos.lat(), lng: pos.lng() })
+              }}
+            />
+          </Map>
+        )}
+      </APIProvider>
     </div>
   )
 }
