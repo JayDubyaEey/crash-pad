@@ -80,6 +80,7 @@ export function StoryboardPanel({ title, location, items, onItemsChange }) {
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               maxNativeZoom={NATIVE_MAX_ZOOM}
+              maxZoom={ZOOM}
             />
             <RecenterMap lat={location.lat} lng={location.lng} />
           </MapContainer>
