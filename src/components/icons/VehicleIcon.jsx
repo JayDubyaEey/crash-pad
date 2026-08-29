@@ -8,7 +8,7 @@ import { Bike, Bus, Car, Trailer, Truck } from 'lucide-react'
 export const VEHICLE_TYPES = [
   { type: 'bike', label: 'Bike', color: '#059669', w: 14, h: 40, picker: Bike },
   { type: 'car', label: 'Car', color: '#2563eb', w: 26, h: 48, picker: Car },
-  { type: 'truck', label: 'Truck', color: '#d97706', w: 30, h: 56, picker: Truck },
+  { type: 'van', label: 'Van', color: '#d97706', w: 30, h: 56, picker: Truck },
   { type: 'bus', label: 'Bus', color: '#7c3aed', w: 28, h: 72, picker: Bus },
   { type: 'lorry', label: 'Lorry', color: '#dc2626', w: 30, h: 84, picker: Trailer },
 ]

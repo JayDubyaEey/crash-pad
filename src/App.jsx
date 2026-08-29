@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { LocationPicker } from './components/LocationPicker'
 import { ReportHeader } from './components/ReportHeader'
+import { SponsorBanner, SponsorRails } from './components/Sponsor'
 import { StoryboardPanel } from './components/StoryboardPanel'
+import { sponsor } from './sponsor.config'
 import './App.css'
 
 const STORAGE_KEY = 'crashpad-report'
@@ -86,6 +88,9 @@ export default function App() {
 
   return (
     <div className="app">
+      <SponsorRails />
+      <SponsorBanner />
+
       <div className="no-print toolbar mb-4 flex flex-col gap-3 rounded-lg bg-foreground px-4 py-3 text-background sm:flex-row sm:items-center sm:justify-between">
         <span className="hint text-xs text-background/70">
           Uses your browser's print dialog — choose "Save as PDF". Fills two A4 pages. Entries
@@ -111,7 +116,10 @@ export default function App() {
       <div className="print-page">
         <ReportHeader meta={meta} onChange={setMeta} />
         <LocationPicker location={location} onLocationChange={setLocation} />
-        <div className="page-footer">Page 1 of 2</div>
+        <div className="page-footer">
+          <span>{sponsor.name && `Supported by ${sponsor.name}`}</span>
+          <span>Page 1 of 2</span>
+        </div>
       </div>
 
       <div className="print-page">
@@ -136,7 +144,10 @@ export default function App() {
             />
           ))}
         </div>
-        <div className="page-footer">Page 2 of 2</div>
+        <div className="page-footer">
+          <span>{sponsor.name && `Supported by ${sponsor.name}`}</span>
+          <span>Page 2 of 2</span>
+        </div>
       </div>
     </div>
   )

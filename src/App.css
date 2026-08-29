@@ -10,6 +10,30 @@
   color: var(--destructive);
 }
 
+/* Sponsor rails sit in the gutter outside the 900px `.app` column, so they
+   need a fixed width rather than a Tailwind spacing scale value. */
+.sponsor-rail {
+  width: 140px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border-color: var(--border);
+  border-style: solid;
+  border-width: 0;
+}
+
+.sponsor-rail-left {
+  left: 0;
+  border-right-width: 2px;
+}
+
+.sponsor-rail-right {
+  right: 0;
+  border-left-width: 2px;
+}
+
 .picker-map {
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -241,9 +265,9 @@
   }
 
   .page-footer {
-    display: block;
+    display: flex;
+    justify-content: space-between;
     margin-top: 10px;
-    text-align: right;
     font-size: 9px;
     color: var(--muted-foreground);
   }
