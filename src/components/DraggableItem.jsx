@@ -113,9 +113,15 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
           {item.kind === 'sign' && (
             <input
               type="number"
-              className="w-9 rounded px-1.5 py-0.5 text-xs"
+              min={0}
+              max={200}
+              className="w-14 rounded px-1.5 py-0.5 text-xs"
               value={item.speed}
-              onChange={(e) => onChange({ ...item, speed: e.target.value })}
+              onChange={(e) => {
+                const raw = e.target.value
+                if (raw === '') return onChange({ ...item, speed: raw })
+                onChange({ ...item, speed: clamp(Number(raw), 0, 200) })
+              }}
               onPointerDown={(e) => e.stopPropagation()}
             />
           )}

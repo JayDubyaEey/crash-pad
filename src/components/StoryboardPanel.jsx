@@ -2,9 +2,12 @@ import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { staticMapUrl } from '@/lib/staticMap'
 import { DraggableItem } from './DraggableItem'
-import { VEHICLE_TYPES, ImpactIcon } from './icons/VehicleIcon'
+import { VEHICLE_TYPES, ImpactIcon, SpeedSign } from './icons/VehicleIcon'
 
 const ZOOM = 19
+const ICON_SIZE = 20
+const TOOL_BUTTON_CLASS =
+  'h-auto w-14 flex-col items-center gap-0.5 px-1 py-1 text-[10px] text-muted-foreground'
 
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`
@@ -47,21 +50,43 @@ export function StoryboardPanel({ title, description, location, items, onItemsCh
             variant="outline"
             size="sm"
             title={`Add ${v.label}`}
-            className="h-auto flex-col gap-0.5 px-1.5 py-1 text-[10px] text-muted-foreground"
+            className={TOOL_BUTTON_CLASS}
             onClick={() => addVehicle(v.type)}
           >
-            <v.picker size={18} color={v.color} strokeWidth={2} />
+            <v.picker size={ICON_SIZE} color={v.color} strokeWidth={2} />
             <span>{v.label}</span>
           </Button>
         ))}
-        <Button type="button" variant="outline" size="sm" className="text-[11px]" onClick={addSign}>
-          + Speed
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          title="Add speed sign"
+          className={TOOL_BUTTON_CLASS}
+          onClick={addSign}
+        >
+          <SpeedSign speed={30} size={ICON_SIZE} />
+          <span>Speed</span>
         </Button>
-        <Button type="button" variant="outline" size="sm" title="Add impact point" onClick={addImpact}>
-          <ImpactIcon />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          title="Add impact point"
+          className={TOOL_BUTTON_CLASS}
+          onClick={addImpact}
+        >
+          <ImpactIcon size={ICON_SIZE} />
+          <span>Impact</span>
         </Button>
         {onCopyToNext && items.length > 0 && (
-          <Button type="button" variant="outline" size="sm" className="ml-auto text-[11px]" onClick={onCopyToNext}>
+          <Button
+            type="button"
+            variant="default"
+            size="sm"
+            className="ml-auto h-auto self-stretch text-[11px]"
+            onClick={onCopyToNext}
+          >
             Copy to next →
           </Button>
         )}

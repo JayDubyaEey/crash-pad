@@ -1,3 +1,4 @@
+import { Download, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { LocationPicker } from './components/LocationPicker'
@@ -63,16 +64,35 @@ export default function App() {
     )
   }
 
+  function handleClear() {
+    if (!confirm('Clear all report data? This cannot be undone.')) return
+    setLocation(null)
+    setMeta({ ...DEFAULT_META, date: new Date().toISOString().slice(0, 10) })
+    setFrames([[], [], []])
+  }
+
   return (
     <div className="app">
-      <div className="no-print toolbar flex items-center gap-3 mb-4">
-        <Button type="button" onClick={() => window.print()}>
-          Export PDF
-        </Button>
-        <span className="hint text-xs text-muted-foreground">
+      <div className="no-print toolbar mb-4 flex items-center justify-between gap-3 rounded-lg bg-foreground px-4 py-3 text-background">
+        <span className="hint text-xs text-background/70">
           Uses your browser's print dialog — choose "Save as PDF". Fills two A4 pages. Entries
           are saved on this device automatically.
         </span>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button
+            type="button"
+            variant="ghost"
+            className="gap-1.5 text-background/70 hover:bg-background/10 hover:text-background"
+            onClick={handleClear}
+          >
+            <Trash2 size={16} />
+            Clear
+          </Button>
+          <Button type="button" variant="secondary" className="gap-1.5" onClick={() => window.print()}>
+            <Download size={16} />
+            Export PDF
+          </Button>
+        </div>
       </div>
 
       <div className="print-page">

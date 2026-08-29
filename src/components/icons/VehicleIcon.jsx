@@ -37,8 +37,7 @@ export function VehicleIcon({ type }) {
   )
 }
 
-export function ImpactIcon() {
-  const size = 36
+export function ImpactIcon({ size = 36 }) {
   const points = starPoints(18, 18, 8, 16, 8)
   return (
     <svg width={size} height={size} viewBox="0 0 36 36">
@@ -59,8 +58,7 @@ function starPoints(cx, cy, innerR, outerR, spikes) {
   return pts.join(' ')
 }
 
-export function SpeedSign({ speed }) {
-  const size = 40
+export function SpeedSign({ speed, size = 40 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40">
       <circle cx="20" cy="20" r="18" fill="#fff" stroke="#d90000" strokeWidth="4" />
