@@ -65,7 +65,7 @@
 
 .rotate-handle {
   position: absolute;
-  top: -28px;
+  bottom: -28px;
   left: 50%;
   width: 28px;
   height: 28px;
@@ -93,7 +93,7 @@
 .rotate-handle::before {
   content: '';
   position: absolute;
-  top: 22px;
+  top: 0;
   left: 50%;
   width: 2px;
   height: 10px;
@@ -208,11 +208,13 @@
   }
 
   .vehicle-model-input,
+  [data-slot='input'],
   [data-slot='textarea'],
   .date-input {
     border: none;
     padding: 0;
     background: none;
+    box-shadow: none;
   }
 
   .field-card {

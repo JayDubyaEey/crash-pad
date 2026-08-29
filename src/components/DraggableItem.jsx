@@ -30,8 +30,8 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
   }
 
   // Free rotation: angle from the shape's center to the pointer, offset so
-  // "straight up" (handle directly above) is 0deg — matches the icon's
-  // resting orientation.
+  // "straight down" (handle directly below, out from under the toolbar) is
+  // 0deg — matches the icon's resting orientation.
   function handleRotateStart(e) {
     e.stopPropagation()
     e.currentTarget.setPointerCapture(e.pointerId)
@@ -43,7 +43,7 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
     const rect = shapeRef.current.getBoundingClientRect()
     const cx = rect.left + rect.width / 2
     const cy = rect.top + rect.height / 2
-    const angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI + 90
+    const angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI - 90
     onChange({ ...item, rotation: Math.round(angle) })
   }
 

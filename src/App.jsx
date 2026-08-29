@@ -26,6 +26,18 @@ const DEFAULT_META = {
   otherVehicleReg: '',
   otherVehicleModel: '',
   otherVehicleVerified: false,
+  yourDriverName: '',
+  yourDriverPhone: '',
+  yourDriverEmail: '',
+  yourDriverPostcode: '',
+  yourDriverInsuranceProvider: '',
+  yourDriverPolicyNumber: '',
+  otherDriverName: '',
+  otherDriverPhone: '',
+  otherDriverEmail: '',
+  otherDriverPostcode: '',
+  otherDriverInsuranceProvider: '',
+  otherDriverPolicyNumber: '',
   notes: '',
 }
 
@@ -74,7 +86,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <div className="no-print toolbar mb-4 flex items-center justify-between gap-3 rounded-lg bg-foreground px-4 py-3 text-background">
+      <div className="no-print toolbar mb-4 flex flex-col gap-3 rounded-lg bg-foreground px-4 py-3 text-background sm:flex-row sm:items-center sm:justify-between">
         <span className="hint text-xs text-background/70">
           Uses your browser's print dialog — choose "Save as PDF". Fills two A4 pages. Entries
           are saved on this device automatically.
