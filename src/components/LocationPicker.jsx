@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { geocode } from '../lib/geocode'
+import { staticMapUrl } from '../lib/staticMap'
 
 // This is a browser key, restricted by HTTP referrer in the Google Cloud
 // console to this site's domain — unlike the DVLA/geocoding keys, Google's
@@ -135,6 +136,11 @@ export function LocationPicker({ location, onLocationChange }) {
           </Map>
         )}
       </APIProvider>
+
+      {/* The live JS map's canvas/WebGL tiles don't rasterize into print/PDF
+          output, so swap in a static image just for print — same fix already
+          used for the storyboard panels. */}
+      {location && <img className="picker-map-print" src={staticMapUrl(location, 18)} alt="" />}
     </div>
   )
 }

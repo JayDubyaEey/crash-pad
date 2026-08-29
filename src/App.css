@@ -42,6 +42,10 @@
   height: 260px;
 }
 
+.picker-map-print {
+  display: none;
+}
+
 .storyboard-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -228,7 +232,17 @@
   }
 
   .picker-map {
+    display: none;
+  }
+
+  .picker-map-print {
+    display: block;
+    width: 100%;
     height: 150mm;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-top: 8px;
   }
 
   .vehicle-model-input,
