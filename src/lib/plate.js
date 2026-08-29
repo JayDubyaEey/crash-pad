@@ -21,3 +21,8 @@ export function formatPlate(plate) {
 
   return cleanPlate
 }
+
+export function isValidPlateFormat(plate) {
+  const cleanPlate = plate.toUpperCase().replace(/\s+/g, '')
+  return PATTERNS.some((pattern) => pattern.test(cleanPlate))
+}

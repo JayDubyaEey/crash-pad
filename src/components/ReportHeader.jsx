@@ -1,8 +1,11 @@
+import { AlertTriangle, Cloud, CloudFog, CloudLightning, CloudRain, CloudSnow, Sun, Wind } from 'lucide-react'
 import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { lookupVehicle } from '../lib/dvla'
+import { isValidPlateFormat } from '../lib/plate'
 import { NumberPlateInput } from './NumberPlateInput'
 
 function Field({ label, children, className = '' }) {
@@ -15,31 +18,118 @@ function Field({ label, children, className = '' }) {
 }
 
 function VehicleField({ label, meta, onChange, regField, modelField, verifiedField, lookupStatus, onRegBlur }) {
+  const [touched, setTouched] = useState(false)
+  const reg = meta[regField]
+
   function setReg(val) {
     // Editing the plate invalidates whatever the last lookup found.
     onChange({ ...meta, [regField]: val, [verifiedField]: false })
   }
 
+  function handleBlur(e) {
+    setTouched(true)
+    onRegBlur?.(e)
+  }
+
+  // Priority: an in-flight lookup wins, then a confirmed result, then a
+  // failed lookup, then (only once the user has left the field) a plain
+  // format check — typing "AB12" isn't "invalid" until they're done.
+  const status =
+    lookupStatus === 'loading'
+      ? 'loading'
+      : meta[verifiedField]
+        ? 'valid'
+        : lookupStatus === 'error'
+          ? 'notfound'
+          : touched && reg.trim() && !isValidPlateFormat(reg)
+            ? 'invalid'
+            : undefined
+
   return (
-    <Field label={label}>
-      <NumberPlateInput value={meta[regField]} onChange={setReg} onBlur={onRegBlur} status={lookupStatus} />
-      {lookupStatus === 'error' && (
-        <span className="no-print text-destructive">Vehicle not found — enter make/model manually</span>
-      )}
-      {meta[verifiedField] ? (
-        <div className="vehicle-model-input rounded-lg border border-input bg-muted px-2.5 py-1 text-sm text-foreground">
-          {meta[modelField] || '—'}
+    <div className="field-card rounded-lg border border-border p-3">
+      <Field label={label}>
+        <NumberPlateInput value={reg} onChange={setReg} onBlur={handleBlur} status={status} />
+        {meta[verifiedField] ? (
+          <div className="vehicle-model-input rounded-lg border border-input bg-muted px-2.5 py-1 text-sm text-foreground">
+            {meta[modelField] || '—'}
+          </div>
+        ) : (
+          <div className="relative">
+            <Input
+              type="text"
+              className="vehicle-model-input pr-8"
+              placeholder="Make / model"
+              value={meta[modelField]}
+              onChange={(e) => onChange({ ...meta, [modelField]: e.target.value })}
+            />
+            {status === 'notfound' && (
+              <AlertTriangle
+                size={15}
+                className="no-print absolute right-2.5 top-1/2 -translate-y-1/2 text-destructive"
+                title="Unable to retrieve DVLA data"
+              />
+            )}
+          </div>
+        )}
+      </Field>
+    </div>
+  )
+}
+
+const WEATHER_OPTIONS = [
+  { value: 'clear', label: 'Clear', icon: Sun },
+  { value: 'cloudy', label: 'Cloudy', icon: Cloud },
+  { value: 'rain', label: 'Rain', icon: CloudRain },
+  { value: 'fog', label: 'Foggy', icon: CloudFog },
+  { value: 'snow', label: 'Snow', icon: CloudSnow },
+  { value: 'wind', label: 'Windy', icon: Wind },
+  { value: 'storm', label: 'Storm', icon: CloudLightning },
+]
+
+function WeatherField({ meta, onChange }) {
+  const selected = meta.weather ?? []
+
+  function toggle(value) {
+    const next = selected.includes(value) ? selected.filter((v) => v !== value) : [...selected, value]
+    onChange({ ...meta, weather: next })
+  }
+
+  return (
+    <div className="field-card rounded-lg border border-border p-3">
+      <Field label="Weather conditions">
+        <div className="no-print flex flex-wrap gap-1.5">
+          {WEATHER_OPTIONS.map((opt) => {
+            const active = selected.includes(opt.value)
+            return (
+              <Button
+                key={opt.value}
+                type="button"
+                variant={active ? 'default' : 'outline'}
+                size="sm"
+                className="gap-1.5"
+                onClick={() => toggle(opt.value)}
+              >
+                <opt.icon size={14} />
+                {opt.label}
+              </Button>
+            )
+          })}
         </div>
-      ) : (
-        <Input
-          type="text"
-          className="vehicle-model-input"
-          placeholder="Make / model"
-          value={meta[modelField]}
-          onChange={(e) => onChange({ ...meta, [modelField]: e.target.value })}
-        />
-      )}
-    </Field>
+
+        <div className="weather-print flex flex-wrap gap-3 text-sm">
+          {selected.length === 0 ? (
+            <span className="text-muted-foreground">—</span>
+          ) : (
+            WEATHER_OPTIONS.filter((o) => selected.includes(o.value)).map((opt) => (
+              <span key={opt.value} className="inline-flex items-center gap-1">
+                <opt.icon size={14} />
+                {opt.label}
+              </span>
+            ))
+          )}
+        </div>
+      </Field>
+    </div>
   )
 }
 
@@ -71,12 +161,15 @@ export function ReportHeader({ meta, onChange }) {
   }
 
   return (
-    <div className="report-header flex flex-col gap-4 border-b-2 border-foreground pb-4 mb-4">
-      <h1 className="m-0 text-xl font-semibold">Accident Report Diagram</h1>
+    <div className="report-header flex flex-col gap-4 border-b border-border pb-4 mb-4">
+      <div className="flex items-baseline justify-between gap-4">
+        <h1 className="m-0 text-xl font-semibold">Accident Report Diagram</h1>
+        <Field label="Date" className="w-36 shrink-0">
+          <Input type="date" className="date-input" value={meta.date} onChange={set('date')} />
+        </Field>
+      </div>
 
-      <Field label="Date" className="w-44">
-        <Input type="date" className="date-input" value={meta.date} onChange={set('date')} />
-      </Field>
+      <WeatherField meta={meta} onChange={onChange} />
 
       <div className="grid grid-cols-2 gap-4">
         <VehicleField
@@ -101,14 +194,16 @@ export function ReportHeader({ meta, onChange }) {
         />
       </div>
 
-      <Field label="Notes">
-        <Textarea
-          rows={3}
-          placeholder="Describe what happened..."
-          value={meta.notes}
-          onChange={set('notes')}
-        />
-      </Field>
+      <div className="field-card rounded-lg border border-border p-3">
+        <Field label="Notes">
+          <Textarea
+            rows={3}
+            placeholder="Describe what happened..."
+            value={meta.notes}
+            onChange={set('notes')}
+          />
+        </Field>
+      </div>
     </div>
   )
 }

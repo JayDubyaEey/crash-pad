@@ -68,6 +68,21 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
         {item.kind === 'vehicle' && <VehicleIcon type={item.vehicleType} />}
         {item.kind === 'sign' && <SpeedSign speed={item.speed} />}
         {item.kind === 'impact' && <ImpactIcon />}
+
+        {/* Lives inside the rotated shape so it stays attached to "top" as the
+            shape turns, like a design-tool rotate handle — bigger touch target
+            than the old toolbar button, and grabbed right off the object. */}
+        {selected && item.kind === 'vehicle' && (
+          <div
+            className="rotate-handle no-print"
+            title="Drag to rotate"
+            onPointerDown={handleRotateStart}
+            onPointerMove={handleRotateMove}
+            onPointerUp={handleRotateEnd}
+          >
+            <div className="rotate-handle-stem" />
+          </div>
+        )}
       </div>
 
       {item.kind === 'vehicle' && item.party && (
@@ -81,15 +96,6 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
         >
           {item.kind === 'vehicle' && (
             <>
-              <div
-                className="flex h-6 w-6 touch-none cursor-grab items-center justify-center rounded bg-secondary text-secondary-foreground active:cursor-grabbing"
-                title="Drag to rotate"
-                onPointerDown={handleRotateStart}
-                onPointerMove={handleRotateMove}
-                onPointerUp={handleRotateEnd}
-              >
-                ↻
-              </div>
               <Button
                 type="button"
                 size="icon-xs"

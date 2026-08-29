@@ -96,11 +96,14 @@ export function LocationPicker({ location, onLocationChange }) {
       </div>
 
       {location && (
-        <div className="text-sm text-foreground/80">
-          {location.address}
-          <span className="ml-2 font-mono text-xs text-muted-foreground">
-            {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
-          </span>
+        <div className="field-card flex flex-col gap-1 rounded-lg border border-border p-3">
+          <Label className="text-xs font-medium text-muted-foreground">Location</Label>
+          <div className="text-sm text-foreground">
+            {location.address}
+            <span className="ml-2 font-mono text-xs text-muted-foreground">
+              {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+            </span>
+          </div>
         </div>
       )}
 

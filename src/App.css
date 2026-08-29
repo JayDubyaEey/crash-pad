@@ -12,6 +12,7 @@
 
 .picker-map {
   border-radius: var(--radius);
+  border: 1px solid var(--border);
   margin-top: 8px;
   width: 100%;
   height: 260px;
@@ -53,12 +54,51 @@
 }
 
 .placed-item-shape {
+  position: relative;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
 }
 
 .placed-item.selected .placed-item-shape {
   outline: 2px dashed var(--primary);
   outline-offset: 2px;
+}
+
+.rotate-handle {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateX(-50%);
+  touch-action: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rotate-handle:active {
+  cursor: grabbing;
+}
+
+.rotate-handle-stem {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.rotate-handle::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  width: 2px;
+  height: 10px;
+  background: var(--primary);
+  transform: translateX(-50%);
 }
 
 .item-controls {
@@ -88,6 +128,46 @@
 
 .party-tag.other {
   background: #dc2626;
+}
+
+.section-title {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.plate-glow {
+  transition: box-shadow 0.2s ease;
+}
+
+.plate-glow-amber {
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.5), 0 0 12px 2px rgba(245, 158, 11, 0.6);
+}
+
+.plate-glow-red {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5), 0 0 12px 2px rgba(239, 68, 68, 0.6);
+}
+
+.plate-glow-green {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5), 0 0 12px 2px rgba(34, 197, 94, 0.6);
+}
+
+@keyframes plate-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35), 0 0 8px 1px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.7), 0 0 20px 4px rgba(59, 130, 246, 0.8);
+  }
+}
+
+.plate-glow-pulse {
+  animation: plate-glow-pulse 1.1s ease-in-out infinite;
+}
+
+.page-running-header,
+.page-footer,
+.weather-print {
+  display: none;
 }
 
 /* --- Print: single clean A4 page --- */
@@ -128,17 +208,57 @@
   }
 
   .vehicle-model-input,
-  .notes-field textarea,
+  [data-slot='textarea'],
   .date-input {
     border: none;
     padding: 0;
     background: none;
   }
 
+  .field-card {
+    padding: 8px 0 0;
+    border: none;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+  }
+
+  .field-card + .field-card {
+    border-left: 1px solid var(--border);
+    padding-left: 12px;
+  }
+
+  .page-running-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    font-size: 10px;
+    color: var(--muted-foreground);
+  }
+
+  .page-footer {
+    display: block;
+    margin-top: 10px;
+    text-align: right;
+    font-size: 9px;
+    color: var(--muted-foreground);
+  }
+
+  .weather-print {
+    display: flex;
+  }
+
   .number-plate,
   .party-tag {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .number-plate {
+    animation: none !important;
+    box-shadow: none !important;
   }
 
   .storyboard-panel {

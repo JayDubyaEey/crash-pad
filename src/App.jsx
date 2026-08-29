@@ -19,6 +19,7 @@ function loadSaved() {
 
 const DEFAULT_META = {
   date: new Date().toISOString().slice(0, 10),
+  weather: [],
   yourVehicleReg: '',
   yourVehicleModel: '',
   yourVehicleVerified: false,
@@ -98,9 +99,17 @@ export default function App() {
       <div className="print-page">
         <ReportHeader meta={meta} onChange={setMeta} />
         <LocationPicker location={location} onLocationChange={setLocation} />
+        <div className="page-footer">Page 1 of 2</div>
       </div>
 
       <div className="print-page">
+        <div className="page-running-header">
+          <span className="font-semibold">Accident Report Diagram</span>
+          <span>{meta.date}</span>
+          <span>
+            {meta.yourVehicleReg || 'Your vehicle —'} vs {meta.otherVehicleReg || 'other vehicle —'}
+          </span>
+        </div>
         <h2 className="section-title mb-2 text-[15px]">Accident Storyboard</h2>
         <div className="storyboard-grid">
           {FRAMES.map((frame, i) => (
@@ -115,6 +124,7 @@ export default function App() {
             />
           ))}
         </div>
+        <div className="page-footer">Page 2 of 2</div>
       </div>
     </div>
   )
