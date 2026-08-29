@@ -17,7 +17,7 @@ function Field({ label, children, className = '' }) {
   )
 }
 
-function VehicleField({ label, meta, onChange, regField, modelField, verifiedField, lookupStatus, onRegBlur }) {
+function VehicleField({ label, meta, onChange, regField, modelField, verifiedField, motField, taxField, lookupStatus, onRegBlur }) {
   const [touched, setTouched] = useState(false)
   const reg = meta[regField]
 
@@ -52,6 +52,12 @@ function VehicleField({ label, meta, onChange, regField, modelField, verifiedFie
         {meta[verifiedField] ? (
           <div className="vehicle-model-input mt-2 rounded-lg border border-input bg-muted px-2.5 py-1 text-sm text-foreground">
             {meta[modelField] || '—'}
+            {(meta[motField] || meta[taxField]) && (
+              <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-muted-foreground">
+                {meta[motField] && <span>MOT: {meta[motField]}</span>}
+                {meta[taxField] && <span>Tax: {meta[taxField]}</span>}
+              </div>
+            )}
           </div>
         ) : (
           <div className="relative mt-2">
@@ -61,6 +67,11 @@ function VehicleField({ label, meta, onChange, regField, modelField, verifiedFie
               placeholder="Make / model"
               value={meta[modelField]}
               onChange={(e) => onChange({ ...meta, [modelField]: e.target.value })}
+              autoComplete="off"
+              data-1p-ignore
+              data-lpignore="true"
+              data-bwignore
+              data-form-type="other"
             />
             {status === 'notfound' && (
               <AlertTriangle
@@ -145,6 +156,11 @@ function DriverCard({ label, meta, onChange, prefix }) {
             name={`ref-${prefix}-a`}
             value={meta[`${prefix}InsuranceProvider`]}
             onChange={(e) => update('InsuranceProvider', e.target.value)}
+            autoComplete="off"
+            data-1p-ignore
+            data-lpignore="true"
+            data-bwignore
+            data-form-type="other"
           />
         </Field>
       </div>
@@ -154,6 +170,11 @@ function DriverCard({ label, meta, onChange, prefix }) {
           name={`ref-${prefix}-b`}
           value={meta[`${prefix}PolicyNumber`]}
           onChange={(e) => update('PolicyNumber', e.target.value)}
+          autoComplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+          data-bwignore
+          data-form-type="other"
         />
       </Field>
     </div>
@@ -224,7 +245,7 @@ export function ReportHeader({ meta, onChange }) {
     return (e) => onChange({ ...meta, [field]: e.target.value })
   }
 
-  function lookupReg(regField, modelField, verifiedField) {
+  function lookupReg(regField, modelField, verifiedField, motField, taxField) {
     return async () => {
       const reg = meta[regField]
       if (!reg.trim()) return
@@ -235,6 +256,8 @@ export function ReportHeader({ meta, onChange }) {
           ...prevMeta,
           [modelField]: [data.make, data.colour].filter(Boolean).join(' · '),
           [verifiedField]: true,
+          [motField]: data.motStatus,
+          [taxField]: data.taxStatus,
         }))
         setLookup((prev) => ({ ...prev, [regField]: undefined }))
       } catch {
@@ -263,8 +286,10 @@ export function ReportHeader({ meta, onChange }) {
           regField="yourVehicleReg"
           modelField="yourVehicleModel"
           verifiedField="yourVehicleVerified"
+          motField="yourVehicleMotStatus"
+          taxField="yourVehicleTaxStatus"
           lookupStatus={lookup.yourVehicleReg}
-          onRegBlur={lookupReg('yourVehicleReg', 'yourVehicleModel', 'yourVehicleVerified')}
+          onRegBlur={lookupReg('yourVehicleReg', 'yourVehicleModel', 'yourVehicleVerified', 'yourVehicleMotStatus', 'yourVehicleTaxStatus')}
         />
         <VehicleField
           label="Other vehicle"
@@ -273,8 +298,10 @@ export function ReportHeader({ meta, onChange }) {
           regField="otherVehicleReg"
           modelField="otherVehicleModel"
           verifiedField="otherVehicleVerified"
+          motField="otherVehicleMotStatus"
+          taxField="otherVehicleTaxStatus"
           lookupStatus={lookup.otherVehicleReg}
-          onRegBlur={lookupReg('otherVehicleReg', 'otherVehicleModel', 'otherVehicleVerified')}
+          onRegBlur={lookupReg('otherVehicleReg', 'otherVehicleModel', 'otherVehicleVerified', 'otherVehicleMotStatus', 'otherVehicleTaxStatus')}
         />
       </div>
 
