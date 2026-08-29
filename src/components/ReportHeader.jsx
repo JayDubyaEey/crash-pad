@@ -142,6 +142,7 @@ function DriverCard({ label, meta, onChange, prefix }) {
         </Field>
         <Field label="Insurance provider">
           <Input
+            name={`ref-${prefix}-a`}
             value={meta[`${prefix}InsuranceProvider`]}
             onChange={(e) => update('InsuranceProvider', e.target.value)}
           />
@@ -149,7 +150,11 @@ function DriverCard({ label, meta, onChange, prefix }) {
       </div>
 
       <Field label="Policy number">
-        <Input value={meta[`${prefix}PolicyNumber`]} onChange={(e) => update('PolicyNumber', e.target.value)} />
+        <Input
+          name={`ref-${prefix}-b`}
+          value={meta[`${prefix}PolicyNumber`]}
+          onChange={(e) => update('PolicyNumber', e.target.value)}
+        />
       </Field>
     </div>
   )
