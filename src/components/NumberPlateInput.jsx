@@ -32,6 +32,11 @@ export function NumberPlateInput({ value, onChange, onBlur, status, placeholder 
       maxLength={8}
       className={`number-plate w-full rounded-md border-2 border-black bg-[#ffd700] px-2 py-3 text-center text-3xl font-black tracking-[0.14em] text-black outline-none placeholder:text-black/30 ${glow}`}
       style={{ fontFamily: '"Arial Narrow", Arial, sans-serif' }}
+      autoComplete="off"
+      data-lpignore="true"
+      data-1p-ignore
+      data-bwignore
+      data-form-type="other"
     />
   )
 }

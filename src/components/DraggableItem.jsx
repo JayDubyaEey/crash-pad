@@ -122,6 +122,11 @@ export function DraggableItem({ item, panelRef, selected, onChange, onSelect, on
               min={0}
               max={200}
               className="w-14 rounded px-1.5 py-0.5 text-xs"
+              autoComplete="off"
+              data-lpignore="true"
+              data-1p-ignore
+              data-bwignore
+              data-form-type="other"
               value={item.speed}
               onChange={(e) => {
                 const raw = e.target.value
