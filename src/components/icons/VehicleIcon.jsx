@@ -1,11 +1,16 @@
-// Simplified top-down vehicle silhouettes. Real accident diagrams use plain
-// outline shapes like this rather than detailed art — clarity over realism.
+import { Bike, Bus, Car, Trailer, Truck } from 'lucide-react'
+
+// Simplified top-down vehicle silhouettes for the actual placed diagram
+// icons — real accident diagrams use plain outline shapes like this rather
+// than detailed art, clarity over realism. `picker` is a recognisable glyph
+// (lucide) used only in the toolbar's vehicle-select buttons, where a
+// side-on icon reads far clearer at a glance than the top-down shape.
 export const VEHICLE_TYPES = [
-  { type: 'bike', label: 'Bike', color: '#059669', w: 14, h: 40 },
-  { type: 'car', label: 'Car', color: '#2563eb', w: 26, h: 48 },
-  { type: 'truck', label: 'Truck', color: '#d97706', w: 30, h: 56 },
-  { type: 'bus', label: 'Bus', color: '#7c3aed', w: 28, h: 72 },
-  { type: 'lorry', label: 'Lorry', color: '#dc2626', w: 30, h: 84 },
+  { type: 'bike', label: 'Bike', color: '#059669', w: 14, h: 40, picker: Bike },
+  { type: 'car', label: 'Car', color: '#2563eb', w: 26, h: 48, picker: Car },
+  { type: 'truck', label: 'Truck', color: '#d97706', w: 30, h: 56, picker: Truck },
+  { type: 'bus', label: 'Bus', color: '#7c3aed', w: 28, h: 72, picker: Bus },
+  { type: 'lorry', label: 'Lorry', color: '#dc2626', w: 30, h: 84, picker: Trailer },
 ]
 
 export function VehicleIcon({ type }) {

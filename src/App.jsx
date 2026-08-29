@@ -55,14 +55,12 @@ export default function App() {
     setFrames((prev) => prev.map((f, i) => (i === index ? items : f)))
   }
 
-  // Explicit action rather than an auto-copy-on-first-item — auto-copying
-  // would risk silently clobbering work someone's already started on the
-  // other two panels.
-  function copyBeforeToOthers() {
-    setFrames((prev) => {
-      const clone = () => prev[0].map((it) => ({ ...it }))
-      return [prev[0], clone(), clone()]
-    })
+  // Explicit action rather than auto-copy — auto-copying would risk silently
+  // clobbering work someone's already started on the next panel.
+  function copyToNext(index) {
+    setFrames((prev) =>
+      prev.map((f, i) => (i === index + 1 ? prev[index].map((it) => ({ ...it })) : f))
+    )
   }
 
   return (
@@ -93,7 +91,7 @@ export default function App() {
               location={location}
               items={frames[i]}
               onItemsChange={(items) => updateFrame(i, items)}
-              onCopyToOthers={i === 0 ? copyBeforeToOthers : undefined}
+              onCopyToNext={i < FRAMES.length - 1 ? () => copyToNext(i) : undefined}
             />
           ))}
         </div>

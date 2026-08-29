@@ -2,14 +2,14 @@ import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { staticMapUrl } from '@/lib/staticMap'
 import { DraggableItem } from './DraggableItem'
-import { VEHICLE_TYPES, VehicleIcon, ImpactIcon } from './icons/VehicleIcon'
+import { VEHICLE_TYPES, ImpactIcon } from './icons/VehicleIcon'
 
 const ZOOM = 19
 
 let nextId = 1
 const makeId = () => `item-${nextId++}-${Date.now()}`
 
-export function StoryboardPanel({ title, description, location, items, onItemsChange, onCopyToOthers }) {
+export function StoryboardPanel({ title, description, location, items, onItemsChange, onCopyToNext }) {
   const panelRef = useRef(null)
   const [selectedId, setSelectedId] = useState(null)
 
@@ -50,7 +50,7 @@ export function StoryboardPanel({ title, description, location, items, onItemsCh
             className="h-auto flex-col gap-0.5 px-1.5 py-1 text-[10px] text-muted-foreground"
             onClick={() => addVehicle(v.type)}
           >
-            <VehicleIcon type={v.type} />
+            <v.picker size={18} color={v.color} strokeWidth={2} />
             <span>{v.label}</span>
           </Button>
         ))}
@@ -60,9 +60,9 @@ export function StoryboardPanel({ title, description, location, items, onItemsCh
         <Button type="button" variant="outline" size="sm" title="Add impact point" onClick={addImpact}>
           <ImpactIcon />
         </Button>
-        {onCopyToOthers && items.length > 0 && (
-          <Button type="button" variant="outline" size="sm" className="ml-auto text-[11px]" onClick={onCopyToOthers}>
-            Copy to Impact &amp; After
+        {onCopyToNext && items.length > 0 && (
+          <Button type="button" variant="outline" size="sm" className="ml-auto text-[11px]" onClick={onCopyToNext}>
+            Copy to next →
           </Button>
         )}
       </div>
